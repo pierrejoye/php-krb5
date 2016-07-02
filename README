@@ -1,4 +1,4 @@
-Kerberos, GSSAPI and KADM5 bindings
+Kerberos, GSSAPI and KADM5 PHP bindings
 
 Features:
 + An interface for maintaining credential caches (KRB5CCache),
@@ -11,3 +11,8 @@ Documentation:
 + see docs/ for the API documentation
 + there are several pieces of example code in the examples/ directory
 + see below for install instructions
+
+This repository focuses on porting php-pkrb5 to php 7. The original repository is http://pecl.php.net/krb5.
+
+The php5 code has not and will not be touched (/php5). The php7 support is done in /php7. Initial import 
+only builds and had not been tested yet, work in progress.
