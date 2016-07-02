@@ -1057,7 +1057,7 @@ PHP_METHOD(KRB5CCache, getTktAttrs)
 	char *encstr;
 #define ENCSTRMAX 256
 	krb5_address *tktaddr, **tkt_addrs;
-	zval *addrlist = NULL;
+	zval addrlist;
 	struct in_addr ipaddr;
 #ifdef INET6_ADDRSTRLEN
 	struct in6_addr ip6addr;
@@ -1177,33 +1177,32 @@ PHP_METHOD(KRB5CCache, getTktAttrs)
 				krb5_free_ticket(ccache->ctx, tkt);
 			}
 
-			MAKE_STD_ZVAL(addrlist);
-			array_init(addrlist);
+			array_init(&addrlist);
 			tkt_addrs = creds.addresses;
 			if (tkt_addrs) while((tktaddr = *(tkt_addrs++))) {
 				if ((tktaddr->addrtype == ADDRTYPE_INET) && (tktaddr->length == 4)) {
 					memcpy(&(ipaddr.s_addr), tktaddr->contents, tktaddr->length);
 
 #ifndef INET6_ADDRSTRLEN
-					add_next_index_string(addrlist, inet_ntoa(ipaddr));
+					add_next_index_string(&addrlist, inet_ntoa(ipaddr));
 				}
 #if 0
  { match curlies
 #endif
 #else /* ! INET6_ADDRSTRLEN */
 					if (inet_ntop(AF_INET, &ipaddr, straddr, sizeof(straddr))) {
-						add_next_index_string(addrlist, straddr);
+						add_next_index_string(&addrlist, straddr);
 					}
 				}
 				if ((tktaddr->addrtype == ADDRTYPE_INET6) && (tktaddr->length >= 4)) {
 					memcpy(ip6addr.s6_addr, tktaddr->contents, tktaddr->length);
 					if (inet_ntop(AF_INET6, &ipaddr, straddr, sizeof(straddr))) {
-						add_next_index_string(addrlist, straddr);
+						add_next_index_string(&addrlist, straddr);
 					}
 				}
 #endif /* INET6_ADDRSTRLEN */
 			}
-			add_assoc_zval(&tktinfo, "addresses", addrlist);
+			add_assoc_zval(&tktinfo, "addresses", &addrlist);
 			add_next_index_zval(return_value,&tktinfo);
 		}
 
